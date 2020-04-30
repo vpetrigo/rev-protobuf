@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from lib.types import StandardParser
+from revpbuf.types import StandardParser
 import io
 
 if __name__ == "__main__":
