@@ -17,11 +17,12 @@ def _iter_bytes(stream: io.BufferedIOBase) -> Iterable[bytes]:
         byte = stream.read1(1)
 
 
-def read_varint(file) -> int:
+def read_varint(stream: io.BufferedIOBase) -> Optional[int]:
     varint = 0
     pos = 0
+    has_next = False
 
-    for byte in _iter_bytes(file):
+    for byte in _iter_bytes(stream):
         num = ord(byte)
         has_next = (num & 0b1000_0000) != 0
         value = num & 0b0111_1111
