@@ -32,11 +32,16 @@ def read_varint(stream: io.BufferedIOBase) -> Optional[int]:
         if not has_next:
             break
 
+    if has_next:
+        # malformed varint as the last
+        # byte should clear has_next flag
+        return None
+
     return varint if pos != 0 else None
 
 
-def read_identifier(file) -> Optional[ProtoId]:
-    identifier = read_varint(file)
+def read_identifier(stream: io.BufferedIOBase) -> Optional[ProtoId]:
+    identifier = read_varint(stream)
 
     if identifier is None:
         return None
