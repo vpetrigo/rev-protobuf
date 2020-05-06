@@ -92,6 +92,8 @@ def read_value(stream: io.BufferedIOBase,
     elif wire_type == WireType.LengthDelimited:
         return read_length_delimited(stream)
     elif wire_type == WireType.StartGroup or wire_type == WireType.EndGroup:
-        assert True
+        raise NotImplementedError(
+            "Protobuf StartGroup and EndGroup is deprecated"
+        )
 
     raise Exception("Unknown wire type %d" % wire_type)
