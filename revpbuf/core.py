@@ -1,13 +1,10 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import io
-
 from enum import Enum
-from collections import namedtuple
-from typing import Iterable, Optional, Union
-
-# Core parsing. This handles the most low-level deserialization.
-# No guessing going on here. These functions return None on EOF.
-
-ProtoId = namedtuple("ProtoId", ["field_no", "wire_type"])
+from typing import Iterable, Optional, Union, Sequence, Any
 
 
 class WireType(Enum):
