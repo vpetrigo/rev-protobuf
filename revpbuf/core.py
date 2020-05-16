@@ -16,6 +16,57 @@ class WireType(Enum):
     Fixed32 = 5
 
 
+class BaseProtoPrinter:
+    def visit(self, ty: Union[FieldDescriptor, BaseTypeRepr]) -> str:
+        raise NotImplementedError
+
+
+class BaseTypeRepr:
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}"
+
+    def get_fields(self) -> Sequence[Sequence[str, Any]]:
+        pass
+
+    def accept(self, printer: BaseProtoPrinter) -> str:
+        return printer.visit(self)
+
+
+class ProtoId:
+    __slots__ = ("field_no", "wire_type")
+
+    def __init__(self, field_no: int, wire_type: int):
+        self.field_no = field_no
+        self.wire_type = WireType(wire_type)
+
+
+class FieldDescriptor:
+    __slots__ = ("proto_id", )
+
+    def __init__(self, stream: io.BufferedIOBase) -> None:
+        self.proto_id = read_identifier(stream)
+
+        if self.proto_id is None:
+            raise ValueError("Incorrect Protobuf stream")
+
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}"
+            f"{{{self.field_no} - {self.wire_type}}}"
+        )
+
+    def accept(self, printer: BaseProtoPrinter) -> None:
+        printer.visit(self)
+
+    @property
+    def field_no(self) -> int:
+        return self.proto_id.field_no
+
+    @property
+    def wire_type(self) -> int:
+        return self.proto_id.wire_type
+
+
 def _iter_bytes(stream: io.BufferedIOBase) -> Iterable[bytes]:
     byte = stream.read1(1)
 
