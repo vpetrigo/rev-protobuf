@@ -107,14 +107,15 @@ def read_identifier(stream: io.BufferedIOBase) -> Optional[ProtoId]:
     return ProtoId(identifier >> 3, identifier & 0b111)
 
 
-def read_fixed(stream: io.BufferedIOBase, wire_type: int) -> Optional[int]:
+def read_fixed(stream: io.BufferedIOBase,
+               wire_type: WireType) -> Optional[bytes]:
     fixed_width = {WireType.Fixed32: 4, WireType.Fixed64: 8}
     data = stream.read1(fixed_width[WireType(wire_type)])
 
     if len(data) == 0 or len(data) != fixed_width[wire_type]:
         return None
 
-    return int.from_bytes(data, byteorder="little")
+    return data
 
 
 def read_length_delimited(stream: io.BufferedIOBase) -> Optional[bytes]:
