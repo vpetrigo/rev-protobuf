@@ -126,7 +126,7 @@ def read_length_delimited(stream: io.BufferedIOBase) -> Optional[bytes]:
 
     data = stream.read1(length)
 
-    return data
+    return data if len(data) == length else None
 
 
 def read_value(stream: io.BufferedIOBase,
