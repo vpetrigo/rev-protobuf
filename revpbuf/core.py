@@ -142,4 +142,4 @@ def read_value(stream: io.BufferedIOBase,
             "Protobuf StartGroup and EndGroup is deprecated"
         )
 
-    raise Exception("Unknown wire type %d" % wire_type)
+    raise Exception(f"Unknown wire type {wire_type}")
