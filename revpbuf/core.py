@@ -130,9 +130,7 @@ def read_length_delimited(stream: io.BufferedIOBase) -> Optional[bytes]:
 
 
 def read_value(stream: io.BufferedIOBase,
-               wire_type: int) -> Optional[Union[int, bytes]]:
-    wire_type = WireType(wire_type)
-
+               wire_type: WireType) -> Optional[Union[int, bytes]]:
     if wire_type == WireType.Varint:
         return read_varint(stream)
     elif wire_type == WireType.Fixed32 or wire_type == WireType.Fixed64:
