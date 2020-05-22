@@ -1,8 +1,4 @@
-from traceback import format_exc
-from io import BytesIO
-from .core import read_varint, read_value
-from typing import Any, Callable, Dict, Tuple
-from collections import namedtuple
+# -*- coding: utf-8 -*-
 
 # Implements the Parser class, which has the basic infrastructure for
 # storing types, calling them to parse, basic formatting and error handling.
