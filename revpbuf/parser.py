@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Implements the Parser class, which has the basic infrastructure for
-# storing types, calling them to parse, basic formatting and error handling.
+from __future__ import annotations
 
 
 class ProtoType:
