@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+import io
+import os
+import string
+import struct
+from typing import Any, Optional, Sequence, Union, List
 
 class ProtoType:
     def __init__(self, field_no: int, ty: str, value: Any) -> None:
