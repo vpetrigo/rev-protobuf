@@ -8,11 +8,7 @@ import string
 import struct
 from typing import Any, Optional, Sequence, Union, List
 
-class ProtoType:
-    def __init__(self, field_no: int, ty: str, value: Any) -> None:
-        self.field_no = field_no
-        self.ty = ty
-        self.value = value
+from .core import read_varint, read_value, WireType, FieldDescriptor, BaseTypeRepr, BaseProtoPrinter
 
     def __str__(self) -> str:
         return self.__repr__()
