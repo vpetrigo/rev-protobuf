@@ -10,8 +10,13 @@ from typing import Any, Optional, Sequence, Union, List
 
 from .core import read_varint, read_value, WireType, FieldDescriptor, BaseTypeRepr, BaseProtoPrinter
 
-    def __str__(self) -> str:
-        return self.__repr__()
+
+class Field:
+    def __init__(
+        self, field_desc: FieldDescriptor, field_repr: BaseTypeRepr
+    ) -> None:
+        self.field_desc = field_desc
+        self.field_repr = field_repr
 
     def __repr__(self) -> str:
         return (
