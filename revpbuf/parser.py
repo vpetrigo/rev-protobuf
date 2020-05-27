@@ -20,10 +20,9 @@ class Field:
 
     def __repr__(self) -> str:
         return (
-            f"{self.__class__.__name__}"
-            "{"
-            f"{self.field_no}, {self.ty}, {self.value}"
-            "}"
+            f"Field {self.field_desc.field_no}"
+            f" - type <{self.field_desc.wire_type}>{os.linesep}"
+            f"\t{self.field_repr}"
         )
 
 
