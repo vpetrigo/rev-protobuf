@@ -26,40 +26,33 @@ class Field:
         )
 
 
-_NativeTypeDescriptor = namedtuple(
-    "NativeTypeDescriptor", ["parser", "wire_type"]
-)
+class MessageRepr(BaseTypeRepr):
+    def __init__(self) -> None:
+        self._fields: List[Field] = []
+
+    def __repr__(self) -> str:
+        return f"{os.linesep}".join([repr(field) for field in self._fields])
+
+    @property
+    def fields(self) -> Sequence[Field]:
+        return self._fields
+
+    def add_field(self, field: Field) -> None:
+        self._fields.append(field)
 
 
-class Parser:
-    def __init__(self):
-        self.types = {}
-        self.native_types: Dict[str, _NativeTypeDescriptor] = {}
+class VarintRepr(BaseTypeRepr):
+    __slots__ = ("_int_repr", "_sint_repr")
 
-        self.default_indent = " " * 4
-        self.compact_max_line_length = 35
-        self.compact_max_length = 70
-        self.bytes_per_line = 24
+    def __init__(self, value: int):
+        self._int_repr = value
+        self._sint_repr = zigzag_decode(self._int_repr)
 
-        self.errors_produced = []
-
-        self.default_handler = "message"
-        self.default_handlers = {
-            0: "varint",
-            1: "64bit",
-            2: "chunk",
-            3: "startgroup",
-            4: "endgroup",
-            5: "32bit",
-        }
-
-    # Formatting
-
-    def indent(self, text, indent=None):
-        if indent is None:
-            indent = self.default_indent
-        lines = (
-            (indent + line if len(line) else line) for line in text.split("\n")
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}:{os.linesep}"
+            f"\tsint: {self.sint}{os.linesep}"
+            f"\tuint: {self.int}"
         )
         return "\n".join(lines)
 
