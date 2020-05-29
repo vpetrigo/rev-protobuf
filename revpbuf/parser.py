@@ -54,7 +54,6 @@ class VarintRepr(BaseTypeRepr):
             f"\tsint: {self.sint}{os.linesep}"
             f"\tuint: {self.int}"
         )
-        return "\n".join(lines)
 
     def to_display_compactly(self, type, lines):
         try:
