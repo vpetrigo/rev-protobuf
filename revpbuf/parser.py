@@ -55,54 +55,85 @@ class VarintRepr(BaseTypeRepr):
             f"\tuint: {self.int}"
         )
 
-    def to_display_compactly(self, type, lines):
-        try:
-            return self.types[type]["compact"]
-        except KeyError:
-            pass
+    def get_fields(self) -> Sequence[Sequence[Union[str, Any]]]:
+        return (
+            ("sint", self.sint),
+            ("uint", self.int),
+        )
 
-        for line in lines:
-            if "\n" in line or len(line) > self.compact_max_line_length:
-                return False
-        if sum(len(line) for line in lines) > self.compact_max_length:
-            return False
-        return True
+    def accept(self, printer: BaseProtoPrinter) -> str:
+        return super().accept(printer)
 
-    def hex_dump(self, file, mark=None):
-        lines = []
-        offset = 0
-        decorate = lambda i, x: \
-            x if (mark is None or offset + i < mark) else x
+    @classmethod
+    def from_bytes(cls, payload: bytes):
+        return cls(read_varint(io.BytesIO(payload)))
 
-        while True:
-            chunk = list(file.read(self.bytes_per_line))
-            if not len(chunk):
-                break
-            padded_chunk = chunk + [None
-                                   ] * max(0, self.bytes_per_line - len(chunk))
-            hexdump = " ".join(
-                "  " if x is None else decorate(i, "%02X" % x)
-                for i, x in enumerate(padded_chunk)
-            )
-            printable_chunk = "".join(
-                decorate(i,
-                         chr(x) if 0x20 <= x < 0x7F else ".")
-                for i, x in enumerate(chunk)
-            )
-            lines.append("%04x   %s  %s" % (offset, hexdump, printable_chunk))
-            offset += len(chunk)
-        return ("\n".join(lines), offset)
+    @property
+    def int(self) -> int:
+        return self._int_repr
 
-    # Error handling
+    @property
+    def sint(self) -> int:
+        return self._sint_repr
 
-    def safe_call(self, handler, x, *wargs):
-        chunk = False
-        try:
-            chunk = x.read()
-            print("CHUNK:", chunk)
-            x = BytesIO(chunk)
-        except Exception:
-            pass
+
+class FixedRepr(BaseTypeRepr):
+    __slots__ = ("_float_repr", "_int_repr", "_uint_repr")
+
+    def __init__(
+        self, value: bytes, int_fmt: str, uint_fmt: str, float_fmt: str
+    ) -> None:
+        self._float_repr, *_ = struct.unpack(float_fmt, value)
+        self._int_repr, *_ = struct.unpack(int_fmt, value)
+        self._uint_repr, *_ = struct.unpack(uint_fmt, value)
+
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}:{os.linesep}"
+            f"\tsint: {self.int}{os.linesep}"
+            f"\tuint: {self.uint}{os.linesep}"
+            f"\tfloat: {self.float}"
+        )
+
+    def get_fields(self) -> Sequence[Sequence[Union[str, Any]]]:
+        return (
+            ("sint", self._int_repr), ("uint", self._uint_repr),
+            ("float", self._float_repr)
+        )
+
+    def accept(self, printer: BaseProtoPrinter) -> str:
+        return super().accept(printer)
+
+    @classmethod
+    def from_bytes(cls, payload: bytes):
+        pass
+
+    @property
+    def float(self) -> float:
+        return self._float_repr
+
+    @property
+    def int(self) -> int:
+        return self._int_repr
+
+    @property
+    def uint(self) -> int:
+        return self._uint_repr
+
+
+class Fixed32Repr(FixedRepr):
+    def __init__(self, value: bytes) -> None:
+        super().__init__(value, "<i", "<I", "<f")
+
+
+class Fixed64Repr(FixedRepr):
+    def __init__(self, value: bytes) -> None:
+        super().__init__(value, "<q", "<Q", "<d")
+
+
+class ChunkRepr(BaseTypeRepr):
+    def __init__(self, value: bytes) -> None:
+        self._chunk_repr = value
 
         try:
             return handler(x, *wargs)
