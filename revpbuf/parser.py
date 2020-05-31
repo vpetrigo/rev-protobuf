@@ -136,30 +136,21 @@ class ChunkRepr(BaseTypeRepr):
         self._chunk_repr = value
 
         try:
-            return handler(x, *wargs)
-        except Exception as e:
-            self.errors_produced.append(e)
-            hex_dump = "" if chunk is False else "\n\n%s\n" % self.hex_dump(
-                BytesIO(chunk), x.tell()
-            )[0]
-            return "{}: {}{}".format(
-                "ERROR",
-                self.indent(format_exc()).strip(), self.indent(hex_dump)
-            )
+            str_candidate = self._chunk_repr.decode()
+            self._str_repr = str_candidate if all(
+                c in string.printable for c in str_candidate
+            ) else None
+        except UnicodeDecodeError:
+            self._str_repr = None
 
-    def parse(self, data, *args):
-        return self.safe_call(self.match_handler("message"), data, *args)
+        self._message_repr = parse_proto(self._chunk_repr)
 
-    # Select suitable native type to use
-
-    def match_native_type(self, ty) -> _NativeTypeDescriptor:
-        print("match_native_type:", ty)
-
-        type_primary = ty.split(" ")[0]
-        print(type_primary)
-
-        return self.native_types.get(
-            type_primary, self.native_types[self.default_handler]
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}:{os.linesep}"
+            f"\tchunk: {self.chunk.hex(' ')}{os.linesep}"
+            f"\tstr: {self.str}{os.linesep}"
+            f"\tsub-msg:{os.linesep}\t\t{self.msg}"
         )
 
     def match_handler(self, ty, wire_type=None) -> Callable[[Any, int], Any]:
