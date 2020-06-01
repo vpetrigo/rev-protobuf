@@ -153,16 +153,94 @@ class ChunkRepr(BaseTypeRepr):
             f"\tsub-msg:{os.linesep}\t\t{self.msg}"
         )
 
-    def match_handler(self, ty, wire_type=None) -> Callable[[Any, int], Any]:
-        print("match_handler:", ty, wire_type)
-        native_type = self.match_native_type(ty)
+    def get_fields(self) -> Sequence[Sequence[Union[str, Any]]]:
+        return (
+            ("chunk", self.chunk.hex(" ")),
+            ("str", self.str),
+            ("sub-msg", self.msg),
+        )
 
-        if wire_type is not None and wire_type != native_type[1]:
-            raise Exception(
-                "Found wire type %d (%s), wanted type %d (%s)" % (
-                    wire_type, self.default_handlers[wire_type],
-                    native_type.wire_type, ty
-                )
-            )
-        print("match_handler:", native_type)
-        return native_type.parser
+    def accept(self, printer: BaseProtoPrinter) -> str:
+        return super().accept(printer)
+
+    @property
+    def chunk(self) -> bytes:
+        return self._chunk_repr
+
+    @property
+    def str(self) -> str:
+        return self._str_repr
+
+    @property
+    def msg(self) -> MessageRepr:
+        return self._message_repr
+
+
+def zigzag_decode(number: int) -> int:
+    return (number >> 1) ^ -(number & 1)
+
+
+def parse_fixed32(payload: bytes) -> Fixed32Repr:
+    return Fixed32Repr(payload)
+
+
+def parse_fixed64(payload: bytes) -> Fixed64Repr:
+    return Fixed64Repr(payload)
+
+
+def parse_chunk(payload: bytes) -> ChunkRepr:
+    return ChunkRepr(payload)
+
+
+def parse_varint(value: int) -> VarintRepr:
+    return VarintRepr(value)
+
+
+def parse_fixed32_stream(stream: io.BufferedIOBase) -> Fixed32Repr:
+    payload = read_value(stream, WireType.Fixed32)
+
+    return Fixed32Repr(payload)
+
+
+def parse_fixed64_stream(stream: io.BufferedIOBase) -> Fixed64Repr:
+    payload = read_value(stream, WireType.Fixed64)
+
+    return Fixed64Repr(payload)
+
+
+def parse_chunk_stream(stream: io.BufferedIOBase) -> ChunkRepr:
+    value = read_value(stream, WireType.LengthDelimited)
+
+    return ChunkRepr(value)
+
+
+def parse_varint_stream(stream: io.BufferedIOBase) -> VarintRepr:
+    value = read_value(stream, WireType.Varint)
+
+    return parse_varint(value)
+
+
+def parse_proto(payload: bytes) -> Optional[MessageRepr]:
+    stream = io.BytesIO(payload)
+    message = MessageRepr()
+    handlers = {
+        WireType.Varint: parse_varint_stream,
+        WireType.Fixed64: parse_fixed64_stream,
+        WireType.Fixed32: parse_fixed32_stream,
+        WireType.LengthDelimited: parse_chunk_stream
+    }
+
+    while True:
+        try:
+            field = FieldDescriptor(stream)
+            field_repr = handlers[field.proto_id.wire_type](stream)
+            message.add_field(Field(field, field_repr))
+
+            if len(stream.read1(1)) == 1:
+                stream.seek(-1, io.SEEK_CUR)
+            else:
+                break
+        except ValueError:
+            return None
+
+    return message
