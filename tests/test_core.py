@@ -11,11 +11,13 @@ def test_read_varint_normal_input() -> None:
     input2 = io.BytesIO(b"\x7f")
     input3 = io.BytesIO(b"\xff\x01")
     input4 = io.BytesIO(b"\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01")
+    input5 = io.BytesIO(b"\x96\x01")
 
     assert core.read_varint(input1) == 1
     assert core.read_varint(input2) == 127
     assert core.read_varint(input3) == 255
     assert core.read_varint(input4) == 2**64 - 1
+    assert core.read_varint(input5) == 150
 
 
 def test_read_varint_malformed_input() -> None:
