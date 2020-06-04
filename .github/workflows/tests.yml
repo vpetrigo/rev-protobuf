@@ -1,0 +1,34 @@
+name: Reverse Google Protobuf payload package tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  release:
+    types:
+      - created
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        uses: VaultVulp/action-pipenv@v2.0.1
+        with:
+          command: install -d
+
+      - name: Test
+        uses: VaultVulp/action-pipenv@v2.0.1
+        with:
+          command: run pytest --cov revpbuf/
+
+      - name: Upload Cov report
+        shell: bash
+        run: bash <(curl -s https://codecov.io/bash)
+        env: ${{ secrets.CODECOV_TOKEN }}
