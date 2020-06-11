@@ -97,3 +97,17 @@ def test_parser_chunk_stream_normal_input(
     assert chunk.chunk == expected[0]
     assert chunk.str == expected[1]
     assert len(chunk.chunk) == expected[2]
+
+
+def test_varint_get_fields() -> None:
+    varint = parser.VarintRepr(1)
+    expected_fields = (("sint", -1), ("uint", 1))
+    varint_fields = varint.get_fields()
+
+    assert len(varint_fields) == len(expected_fields)
+    assert all(
+        [
+            f1 if f1[0] == f2[0] and f1[1] == f2[1] else False
+            for f1, f2 in zip(varint_fields, expected_fields)
+        ]
+    )
