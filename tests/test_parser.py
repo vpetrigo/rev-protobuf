@@ -111,3 +111,20 @@ def test_varint_get_fields() -> None:
             for f1, f2 in zip(varint_fields, expected_fields)
         ]
     )
+
+
+def test_fixed_get_fields() -> None:
+    fixed32 = parser.Fixed32Repr(b"\x00\x00\x00\x00")
+    fixed64 = parser.Fixed64Repr(b"\x00\x00\x00\x00\x00\x00\x00\x00")
+    expected_fields = (("sint", 0), ("uint", 0), ("float", 0.0))
+    fixed32_fields = fixed32.get_fields()
+    fixed64_fields = fixed64.get_fields()
+
+    for fixed_fields in (fixed32_fields, fixed64_fields):
+        assert len(fixed_fields) == len(expected_fields)
+    assert all(
+        [
+            f1 if f1[0] == f2[0] and f1[1] == f2[1] else False
+            for f1, f2 in zip(fixed_fields, expected_fields)
+        ]
+    )
