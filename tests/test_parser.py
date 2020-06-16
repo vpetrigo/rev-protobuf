@@ -105,7 +105,7 @@ def check_fields(fields: Sequence[Any], expected_fields: Sequence[Any]) -> None:
     assert all(
         [
             f1 if f1[0] == f2[0] and f1[1] == f2[1] else False
-            for f1, f2 in zip(varint_fields, expected_fields)
+            for f1, f2 in zip(fields, expected_fields)
         ]
     )
 
