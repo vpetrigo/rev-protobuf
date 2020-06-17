@@ -110,6 +110,14 @@ def check_fields(fields: Sequence[Any], expected_fields: Sequence[Any]) -> None:
     )
 
 
+def test_varint_get_fields() -> None:
+    varint = parser.VarintRepr(1)
+    expected_fields = (("sint", -1), ("uint", 1))
+    varint_fields = varint.get_fields()
+
+    check_fields(varint_fields, expected_fields)
+
+
 def test_fixed_get_fields() -> None:
     fixed32 = parser.Fixed32Repr(b"\x00\x00\x00\x00")
     fixed64 = parser.Fixed64Repr(b"\x00\x00\x00\x00\x00\x00\x00\x00")
