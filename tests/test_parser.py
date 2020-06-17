@@ -126,10 +126,11 @@ def test_fixed_get_fields() -> None:
     fixed64_fields = fixed64.get_fields()
 
     for fixed_fields in (fixed32_fields, fixed64_fields):
-        assert len(fixed_fields) == len(expected_fields)
-    assert all(
-        [
-            f1 if f1[0] == f2[0] and f1[1] == f2[1] else False
-            for f1, f2 in zip(fixed_fields, expected_fields)
-        ]
+        check_fields(fixed_fields, expected_fields)
+
+
+def test_chunk_get_fields() -> None:
+    chunk = parser.ChunkRepr(b"\xff\xff")
+    expected_fields = (
+        ("chunk", "ff ff"), ("str", None), ("sub-msg", None)
     )
