@@ -134,3 +134,6 @@ def test_chunk_get_fields() -> None:
     expected_fields = (
         ("chunk", "ff ff"), ("str", None), ("sub-msg", None)
     )
+    chunk_fields = chunk.get_fields()
+
+    check_fields(chunk_fields, expected_fields)
