@@ -104,10 +104,6 @@ class FixedRepr(BaseTypeRepr):
     def accept(self, printer: BaseProtoPrinter) -> str:
         return super().accept(printer)
 
-    @classmethod
-    def from_bytes(cls, payload: bytes):
-        pass
-
     @property
     def float(self) -> float:
         return self._float_repr
