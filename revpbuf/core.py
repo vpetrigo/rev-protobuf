@@ -63,7 +63,7 @@ class FieldDescriptor:
         return self.proto_id.field_no
 
     @property
-    def wire_type(self) -> int:
+    def wire_type(self) -> WireType:
         return self.proto_id.wire_type
 
 
