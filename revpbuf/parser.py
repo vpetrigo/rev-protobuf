@@ -40,6 +40,11 @@ class MessageRepr(BaseTypeRepr):
     def add_field(self, field: Field) -> None:
         self._fields.append(field)
 
+    def get_fields(self) -> Sequence[Sequence[str, Any]]:
+        raise NotImplementedError(
+            "Message Representation does not support get_fields"
+        )
+
 
 class VarintRepr(BaseTypeRepr):
     __slots__ = ("_int_repr", "_sint_repr")
