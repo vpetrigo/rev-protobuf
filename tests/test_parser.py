@@ -131,9 +131,30 @@ def test_fixed_get_fields() -> None:
 
 def test_chunk_get_fields() -> None:
     chunk = parser.ChunkRepr(b"\xff\xff")
-    expected_fields = (
-        ("chunk", "ff ff"), ("str", None), ("sub-msg", None)
-    )
+    expected_fields = (("chunk", "ff ff"), ("str", None), ("sub-msg", None))
     chunk_fields = chunk.get_fields()
 
     check_fields(chunk_fields, expected_fields)
+
+
+def test_message_get_fields() -> None:
+    payload = bytes.fromhex("0801")
+    stream = io.BytesIO(payload)
+    field_descr = parser.FieldDescriptor(stream)
+    varint = parser.VarintRepr(parser.read_value(stream, field_descr.wire_type))
+    field = parser.Field(field_descr, varint)
+    message = parser.parse_proto(payload)
+    expected_fields = (field, )
+    message_fields = message.fields
+    print(message_fields)
+
+    assert len(message_fields) == len(expected_fields)
+    assert repr(message_fields[0].field_desc) == repr(
+        expected_fields[0].field_desc
+    )
+    assert repr(message_fields[0].field_repr) == repr(
+        expected_fields[0].field_repr
+    )
+
+    with pytest.raises(NotImplementedError):
+        message.get_fields()
