@@ -70,8 +70,10 @@ class VarintRepr(BaseTypeRepr):
         return super().accept(printer)
 
     @classmethod
-    def from_bytes(cls, payload: bytes):
-        return cls(read_varint(io.BytesIO(payload)))
+    def from_bytes(cls, payload: bytes) -> Optional[VarintRepr]:
+        value = read_varint(io.BytesIO(payload))
+
+        return cls(value) if value is not None else None
 
     @property
     def int(self) -> int:
