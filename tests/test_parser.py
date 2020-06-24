@@ -85,6 +85,32 @@ def test_parser_varint_stream_normal_input(
 
 @pytest.mark.parametrize(
     "test_input,expected", [
+        (b"\x96\x01", (150, 75)), (b"\x7f", (127, -64)),
+        (b"\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01", (2**64 - 1, -2**63))
+    ]
+)
+def test_parser_varint_stream_normal_input(
+    test_input: bytes, expected: tuple
+) -> None:
+    varint = parser.VarintRepr.from_bytes(test_input)
+
+    assert varint.int == expected[0]
+    assert varint.sint == expected[1]
+
+
+@pytest.mark.parametrize("test_input,expected", [
+    (b"", None),
+])
+def test_parser_varint_stream_normal_input(
+    test_input: bytes, expected: tuple
+) -> None:
+    varint = parser.VarintRepr.from_bytes(test_input)
+
+    assert varint == None
+
+
+@pytest.mark.parametrize(
+    "test_input,expected", [
         (b"\x02\x68\x67", (b"hg", "hg", 2)),
         (b"\x10" + b"\x68" * 16, (b"h" * 16, "h" * 16, 16)),
         (b"\x02\x96\x01", (b"\x96\x01", None, 2))
