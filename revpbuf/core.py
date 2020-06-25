@@ -55,8 +55,8 @@ class FieldDescriptor:
             f"{{{self.field_no} - {self.wire_type}}}"
         )
 
-    def accept(self, printer: BaseProtoPrinter) -> None:
-        printer.visit(self)
+    def accept(self, printer: BaseProtoPrinter) -> str:
+        return printer.visit(self)
 
     @property
     def field_no(self) -> int:
