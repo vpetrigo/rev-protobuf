@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import io
+import os
 from typing import Any, Sequence, Union
 
 from revpbuf.core import FieldDescriptor, BaseTypeRepr, BaseProtoPrinter
