@@ -13,7 +13,7 @@ class Printer(BaseProtoPrinter):
     def __init__(self):
         self.level = 0
 
-    def visit(self, ty: Union[FieldDescriptor, BaseTypeRepr]) -> None:
+    def visit(self, ty: Union[FieldDescriptor, BaseTypeRepr]) -> str:
         if isinstance(ty, FieldDescriptor):
             self._visit_field_descriptor(ty)
         else:
