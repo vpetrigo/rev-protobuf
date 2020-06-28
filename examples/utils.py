@@ -15,7 +15,7 @@ class Printer(BaseProtoPrinter):
 
     def visit(self, ty: Union[FieldDescriptor, BaseTypeRepr]) -> str:
         if isinstance(ty, FieldDescriptor):
-            self._visit_field_descriptor(ty)
+            return self._visit_field_descriptor(ty)
         else:
             fields = ty.get_fields()
 
