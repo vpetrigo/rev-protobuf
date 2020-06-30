@@ -22,7 +22,7 @@ class Printer(BaseProtoPrinter):
             if not any([f for f in fields if f[0] == "sub-msg"]):
                 return self._visit_non_chunk(ty, fields)
             else:
-                self._visit_chunk(ty, fields)
+                return self._visit_chunk(ty, fields)
 
     def _visit_field_descriptor(self, ty: FieldDescriptor) -> None:
         tabs = "\t" * self.level
