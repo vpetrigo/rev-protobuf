@@ -24,7 +24,7 @@ class Printer(BaseProtoPrinter):
             else:
                 return self._visit_chunk(ty, fields)
 
-    def _visit_field_descriptor(self, ty: FieldDescriptor) -> None:
+    def _visit_field_descriptor(self, ty: FieldDescriptor) -> str:
         tabs = "\t" * self.level
         print(f"{tabs}Field {ty.field_no} - type <{ty.wire_type}>")
 
