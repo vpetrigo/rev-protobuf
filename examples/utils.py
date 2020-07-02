@@ -26,7 +26,9 @@ class Printer(BaseProtoPrinter):
 
     def _visit_field_descriptor(self, ty: FieldDescriptor) -> str:
         tabs = "\t" * self.level
-        print(f"{tabs}Field {ty.field_no} - type <{ty.wire_type}>")
+        result = f"{tabs}Field {ty.field_no} - type <{ty.wire_type}>{os.linesep}"
+
+        return result
 
     def _visit_non_chunk(
         self, _ty: BaseTypeRepr, fields: Sequence[Union[str, Any]]
