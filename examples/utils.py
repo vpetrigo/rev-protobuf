@@ -34,6 +34,9 @@ class Printer(BaseProtoPrinter):
         self, _ty: BaseTypeRepr, fields: Sequence[Union[str, Any]]
     ) -> str:
         tabs_field = "\t" * (self.level + 1)
+        result = f"{os.linesep}".join(
+            [f"{tabs_field}{field[0]}: {field[1]}" for field in fields]
+        )
 
         for field in fields:
             print(f"{tabs_field}{field[0]}: {field[1]}")
