@@ -38,8 +38,7 @@ class Printer(BaseProtoPrinter):
             [f"{tabs_field}{field[0]}: {field[1]}" for field in fields]
         )
 
-        for field in fields:
-            print(f"{tabs_field}{field[0]}: {field[1]}")
+        return f"{result}{os.linesep}"
 
     def _visit_chunk(
         self, _ty: BaseTypeRepr, fields: Sequence[Union[str, Any]]
