@@ -42,7 +42,7 @@ class Printer(BaseProtoPrinter):
 
     def _visit_chunk(
         self, _ty: BaseTypeRepr, fields: Sequence[Union[str, Any]]
-    ) -> None:
+    ) -> str:
         tabs_field = "\t" * (self.level + 1)
 
         for field in fields:
