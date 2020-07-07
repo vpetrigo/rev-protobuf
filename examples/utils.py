@@ -44,6 +44,7 @@ class Printer(BaseProtoPrinter):
         self, _ty: BaseTypeRepr, fields: Sequence[Union[str, Any]]
     ) -> str:
         tabs_field = "\t" * (self.level + 1)
+        str_stream = io.StringIO()
 
         for field in fields:
             if field[0] != "sub-msg":
