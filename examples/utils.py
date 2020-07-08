@@ -48,7 +48,8 @@ class Printer(BaseProtoPrinter):
 
         for field in fields:
             if field[0] != "sub-msg":
-                print(f"{tabs_field}{field[0]}: {field[1]}")
+                result = f"{tabs_field}{field[0]}: {field[1]}{os.linesep}"
+                str_stream.write(result)
             else:
                 if field[1] is not None:
                     print(f"{tabs_field}{field[0]}:")
