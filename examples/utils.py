@@ -52,7 +52,8 @@ class Printer(BaseProtoPrinter):
                 str_stream.write(result)
             else:
                 if field[1] is not None:
-                    print(f"{tabs_field}{field[0]}:")
+                    result = f"{tabs_field}{field[0]}:{os.linesep}"
+                    str_stream.write(result)
                     self.level += 2
 
                     for sub_msg_field in field[1].fields:
