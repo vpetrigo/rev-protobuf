@@ -57,7 +57,14 @@ class Printer(BaseProtoPrinter):
                     self.level += 2
 
                     for sub_msg_field in field[1].fields:
-                        sub_msg_field.field_desc.accept(self)
-                        sub_msg_field.field_repr.accept(self)
+                        result = sub_msg_field.field_desc.accept(self)
+
+                        if result is not None:
+                            str_stream.write(result)
+
+                        result = sub_msg_field.field_repr.accept(self)
+
+                        if result is not None:
+                            str_stream.write(result)
 
                     self.level -= 2
