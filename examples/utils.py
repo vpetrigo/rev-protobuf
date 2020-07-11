@@ -68,3 +68,5 @@ class Printer(BaseProtoPrinter):
                             str_stream.write(result)
 
                     self.level -= 2
+
+        return str_stream.getvalue()
