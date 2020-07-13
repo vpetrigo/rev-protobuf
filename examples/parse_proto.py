@@ -13,7 +13,7 @@ if __name__ == "__main__":
     from revpbuf.parser import parse_proto, MessageRepr
 
 
-def proto_print(message: MessageRepr, level: int = 0) -> None:
+def proto_print(message: MessageRepr, level: int = 0) -> str:
     printer = Printer()
     printer.level = level
 
