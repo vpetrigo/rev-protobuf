@@ -19,8 +19,10 @@ def proto_print(message: MessageRepr, level: int = 0) -> str:
     str_stream = io.StringIO()
 
     for field in message.fields:
-        field.field_desc.accept(printer)
-        field.field_repr.accept(printer)
+        str_stream.write(field.field_desc.accept(printer))
+        str_stream.write(field.field_repr.accept(printer))
+
+    return str_stream.getvalue()
 
 
 if __name__ == "__main__":
