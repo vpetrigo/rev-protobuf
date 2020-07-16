@@ -37,5 +37,6 @@ if __name__ == "__main__":
     for proto_string in (proto_string1, proto_string2):
         print("=" * 32, "Message", "=" * 32)
         result = parse_proto(proto_string)
-        proto_print(result)
+        str_result = proto_print(result)
+        print(str_result, end="")
         print("=" * 73)
