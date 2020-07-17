@@ -172,7 +172,6 @@ def test_message_get_fields() -> None:
     message = parser.parse_proto(payload)
     expected_fields = (field, )
     message_fields = message.fields
-    print(message_fields)
 
     assert len(message_fields) == len(expected_fields)
     assert repr(message_fields[0].field_desc) == repr(
