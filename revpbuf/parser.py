@@ -26,7 +26,7 @@ class Field:
         )
 
 
-class MessageRepr(BaseTypeRepr):
+class MessageRepr:
     def __init__(self) -> None:
         self._fields: List[Field] = []
 
@@ -39,11 +39,6 @@ class MessageRepr(BaseTypeRepr):
 
     def add_field(self, field: Field) -> None:
         self._fields.append(field)
-
-    def get_fields(self) -> Sequence[Sequence[str, Any]]:
-        raise NotImplementedError(
-            "Message Representation does not support get_fields"
-        )
 
 
 class VarintRepr(BaseTypeRepr):
