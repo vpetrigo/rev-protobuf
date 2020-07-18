@@ -180,6 +180,3 @@ def test_message_get_fields() -> None:
     assert repr(message_fields[0].field_repr) == repr(
         expected_fields[0].field_repr
     )
-
-    with pytest.raises(NotImplementedError):
-        message.get_fields()
