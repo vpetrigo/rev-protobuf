@@ -13,9 +13,8 @@ if __name__ == "__main__":
     from revpbuf.parser import parse_proto, MessageRepr
 
 
-def proto_print(message: MessageRepr, level: int = 0) -> str:
+def proto_print(message: MessageRepr) -> str:
     printer = Printer()
-    printer.level = level
     str_stream = io.StringIO()
 
     for field in message.fields:
