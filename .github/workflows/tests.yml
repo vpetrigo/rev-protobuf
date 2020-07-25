@@ -24,9 +24,8 @@ jobs:
           command: sync -d
 
       - name: Test
-        uses: VaultVulp/action-pipenv@v2.0.1
-        with:
-          command: run pytest --cov revpbuf/ --cov-report=xml
+        shell: bash
+        run: tox
 
       - name: Upload Cov report
         shell: bash
