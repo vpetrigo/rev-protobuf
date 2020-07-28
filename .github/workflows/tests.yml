@@ -23,9 +23,10 @@ jobs:
         with:
           command: install -d
 
-      - name: Test
-        shell: bash
-        run: tox
+      - name: Install dependencies
+        uses: VaultVulp/action-pipenv@v2.0.1
+        with:
+          command: run tox
 
       - name: Upload Cov report
         shell: bash
