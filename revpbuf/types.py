@@ -66,11 +66,12 @@ class StandardParser(Parser):
         fields_decoded: MutableSequence[ProtoType] = []
         keys_types = {}
         while True:
-            key, wire_type = read_identifier(file)
-            print("key, wire_type:", key, wire_type)
+            proto_id = read_identifier(file)
 
-            if key is None:
+            if proto_id is None:
                 break
+
+            print("key, wire_type:", proto_id.field_no, proto_id.wire_type)
 
             x = read_value(file, wire_type)
             assert x is not None
@@ -135,7 +136,8 @@ class StandardParser(Parser):
             s += " (%d)" % result[1]
         return s
 
-    def is_probable_string(self, s):
+    @staticmethod
+    def is_probable_string(s):
         controlchars = 0
         alnum = 0
         total = len(s)

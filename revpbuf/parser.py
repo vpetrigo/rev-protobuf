@@ -107,6 +107,7 @@ class Parser:
         chunk = False
         try:
             chunk = x.read()
+            print("CHUNK:", chunk)
             x = BytesIO(chunk)
         except Exception:
             pass
